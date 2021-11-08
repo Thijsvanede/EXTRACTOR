@@ -1,28 +1,19 @@
+# Imports
+import configparser
 
-try:
-	import configparser as ConfigParser
-except ImportError:
-	import ConfigParser
-
-
-patterns = {}
 fpath = "./Data/lists.ini"
 
+def load_lists(path):
+    """Load lists from given file path."""
+    # Initialise patterns
+    patterns = {}
 
+    # Initialise config parser
+    config = configparser.ConfigParser()
 
-def load_lists(fpath):
-    config = ConfigParser.ConfigParser()
-    with open(fpath) as f:
+    # Read file
+    with open(path) as f:
         config.readfp(f)
-    for ind_type in config.sections():
-        try:
-            ind_pattern = config.get(ind_type, 'pattern')
-        except:
-            continue
-        if ind_pattern:
-            patterns[ind_type] = ind_pattern
-    return patterns
 
-
-
-
+    # Return result as dict
+    return {type: config.get(type, 'pattern') for type in config.sections()}
