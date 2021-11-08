@@ -2,7 +2,7 @@ from subject_verb_object_extract import findSVOs, nlp
 # nlp = spacy.load("en_core_web_lg")
 from allennlp.predictors.predictor import Predictor
 from nltk.stem.wordnet import WordNetLemmatizer
-from preprocessings  import *
+from preprocessing import *
 from list_iocs import iocs
 from lists_patterns import load_lists, fpath
 main_verbs = load_lists(fpath)['verbs']
@@ -373,6 +373,3 @@ def triplet_builder(mylist):
         elif len(mylist[i]) == 3:
             triplet.append(mylist[i])
     return list(map(list, triplet))
-
-
-
