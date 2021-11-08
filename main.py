@@ -1,22 +1,28 @@
-from preprocessings import *
-from role_generator import *
+from preprocessings  import *
+from role_generator  import *
 from graph_generator import *
-from lists_patterns import load_lists, fpath
 
 
-parser = argparse.ArgumentParser()
-parser.add_argument('--asterisk', type=str, default='true', help='asterisk task (true, false)')
-parser.add_argument('--crf', type=str, default='true', help='crf task (true, false)')
-parser.add_argument('--rmdup', type=str, default='true', help='remove duplicate task (true, false)')
-parser.add_argument('--elip', type=str, default='false', help='ellipsis resolution (true, false)')
-parser.add_argument('--gname', type=str, default='graph', help='graph name')
+import argformat
+import argparse
+
+# Parse arguments
+parser = argparse.ArgumentParser(
+    formatter_class = argformat.StructuredFormatter,
+)
+
+# Optional arguments
+parser.add_argument('--asterisk'  , type=str, default='true', help='asterisk task')
+parser.add_argument('--crf'       , type=str, default='true', help='crf task')
+parser.add_argument('--rmdup'     , type=str, default='true', help='remove duplicate task')
+parser.add_argument('--elip'      , type=str, default='false', help='ellipsis resolution')
+parser.add_argument('--gname'     , type=str, default='graph', help='graph name')
 parser.add_argument('--input_file', type=str, help='input file')
+
+# Parse arguments
 args = parser.parse_args()
-print(args)
 
-
-
-if __name__=="__main__":
+if __name__ == "__main__":
 
     txt = modification_()
     txt = txt.strip()
@@ -41,5 +47,3 @@ if __name__=="__main__":
         graph_builder(lst)
     else:
         graph_builder(lst)
-
-
