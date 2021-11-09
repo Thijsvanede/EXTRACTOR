@@ -27,6 +27,12 @@ In addition to the required packages, please also install the following modules:
 python3 -m spacy download en_core_web_lg
 ```
 
+Also, you should install the following nltk modules:
+```python
+import nltk
+nltk.download('punkt')
+```
+
 ### Usage
 
 Run EXTRACTOR with `python3 main.py [-h] [--asterisk ASTERISK] [--crf CRF] [--rmdup RMDUP] [--elip ELIP] [--gname GNAME] [--input_file INPUT_FILE]`.
