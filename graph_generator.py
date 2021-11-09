@@ -1,8 +1,7 @@
 import re
 from graphviz import Digraph
-from load_pattern import load_patterns,path
+from load_pattern import load_patterns, path
 from list_iocs import iocs
-import main
 import argparse
 
 class edge(object):
@@ -185,5 +184,3 @@ def graph_builder(lst):
             edge_counter += 1
 
     g.view()
-
-

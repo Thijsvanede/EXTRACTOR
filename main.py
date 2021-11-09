@@ -2,6 +2,7 @@
 import argformat
 import argparse
 import re
+import signal
 from nltk import sent_tokenize
 
 # Imports from package
@@ -31,17 +32,17 @@ args = parser.parse_args()
 
 
 
-def prepare_tokenizer(input_file):
+def prepare(args):
+
+    ########################################################################
+    #                        Tokenizer preparation                         #
+    ########################################################################
 
     import tokenizer
     from lists_patterns import load_lists, fpath
 
-    ################################################################################
-    #                      Stuff that should be moved to main                      #
-    ################################################################################
-
     # Load input file
-    with open(input_file, encoding='iso-8859-1') as input_file:
+    with open(args.input_file, encoding='iso-8859-1') as input_file:
         txt = input_file.readlines()
         txt = " ".join(txt)
         txt = txt.replace('\n', ' ')
@@ -70,69 +71,64 @@ def prepare_tokenizer(input_file):
 
     print("End tokenizer")
 
-
-def prepare_preprocessing():
-    ################################################################################
-    #                             TODO - move to main?                             #
-    ################################################################################
+    ########################################################################
+    #                      Preprocessing preparation                       #
+    ########################################################################
 
     print("Start preprocessing")
 
     # TODO - move load somewhere else?
-    signal.signal(signal.SIGSEGV, SIGSEGV_signal_arises)
+    signal.signal(signal.SIGSEGV, preprocessing.SIGSEGV_signal_arises)
 
     print("------------communicate ---------------")
-    txt = sentence_tokenizer()
-    txt = delete_brackets(txt)
-    txt = pass2acti(txt)
+    txt = tokenizer.sentence_tokenizer(all_sentences_list, titles_list, nlp, main_verbs)
+    txt = preprocessing.delete_brackets(txt)
+    txt = preprocessing.pass2acti(txt, nlp)
     txt = re.sub(' +', ' ', txt)
     print("*********8",txt)
 
-    import main
-    from main import nlp
-
-    if main.args.crf == 'true':
-        txt = coref_(txt, nlp)
+    if args.crf == 'true':
+        txt = preprocessing.coref_(txt, nlp)
         print("coref_",len(txt),txt)
     else:
-        txt = wild_card_extansions(txt)
+        txt = preprocessing.wild_card_extansions(txt)
 
 
-    txt = try_to(txt)
+    txt = preprocessing.try_to(txt)
     print("try_to__",txt)
-    txt = is_capable_of(txt)
+    txt = preprocessing.is_capable_of(txt)
 
-    if main.args.elip == 'true':
-        txt = replcae_surrounding_subject(txt)
+    if args.elip == 'true':
+        txt = preprocessing.replcae_surrounding_subject(txt)
     else:
         print("is capble of__",txt)
-        txt = ellipsis_subject(txt, nlp)
+        txt = preprocessing.ellipsis_subject(txt, nlp)
         print("ellipsis_subject", len(txt), txt)
 
     print('------------ coref_the_following_colon ------------')
-    out = coref_the_following_colon(txt)
+    out = preprocessing.coref_the_following_colon(txt)
 
-    for i,val in enumerate(sent_tokenize(out)):
+    for i,val in enumerate(tokenizer.sent_tokenize(out)):
         print(i,val)
 
     print('------------ coref_the_following_middle ------------')
 
-    midle = coref_the_following_middle(out)
+    midle = preprocessing.coref_the_following_middle(out)
 
-    for i,val in enumerate(sent_tokenize(midle)):
+    for i,val in enumerate(tokenizer.sent_tokenize(midle)):
         print(i,val)
 
-    out_translate = translate_obscure_words(out)
-    print("*****homogenization:",homogenization(out_translate))
-    homo = homogenization(out_translate)
-    comm = communicate_to_sr(homo)
+    out_translate = preprocessing.translate_obscure_words(out)
+    print("*****homogenization:", preprocessing.homogenization(out_translate))
+    homo = preprocessing.homogenization(out_translate)
+    comm = preprocessing.communicate_to_sr(homo)
     print(comm)
-    cc = CـC(comm)
+    cc = preprocessing.CـC(comm)
     print("------------ modification ---------------")
 
 
     print('----Preprocessed:----')
-    for i,val in enumerate(sent_tokenize(modification_())):
+    for i,val in enumerate(tokenizer.sent_tokenize(preprocessing.modification_(cc))):
         print(i,val)
 
     print("End preprocessing")
@@ -144,12 +140,10 @@ def prepare_preprocessing():
 
 if __name__ == "__main__":
 
-    print("Prepare tokenizer")
-    prepare_tokenizer(args.input_file)
-    prepare_preprocessing()
+    prepare(args)
     exit()
 
-    txt = preprocessing.modification_()
+    txt = preprocessing.modification_(cc)
     txt = txt.strip()
     txt = role_generator.colon_seprator_multiplication(txt)
     txt = re.sub(' +', ' ', txt)

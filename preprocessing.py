@@ -11,7 +11,6 @@ from tokenizer          import sentence_tokenizer # TODO - check
 import neuralcoref
 import nltk
 import re
-import signal
 import spacy
 
 ################################################################################
@@ -22,10 +21,10 @@ def delete_brackets(string):
     """Removes square brackets in string."""
     return string.replace("[", "").replace("]", "")
 
-def pass2acti(stri):
+def pass2acti(stri, nlp):
     result = ' '
     for i in sent_tokenize(stri):
-        pa2act = pass2act(i)
+        pa2act = pass2act(i, nlp)
         result += pa2act
     return result
 
@@ -298,7 +297,7 @@ def verb_and_verb(txt, nlp):
     return result
 
 
-def modification_():
+def modification_(cc):
     final_txt = ''
     c = fl = 0
     pattern = load_lists(fpath)['MDF']
