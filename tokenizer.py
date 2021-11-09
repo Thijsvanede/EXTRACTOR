@@ -6,10 +6,10 @@ import main
 if not main.args.input_file:
     raise ValueError("usage: main.py [-h] [--asterisk ASTERISK] [--crf CRF] [--rmdup RMDUP] [--gname GNAME] [--input_file INPUT_FILE]")
 else:
-    f = open(main.args.input_file, encoding='iso-8859-1')
-    txt = f.readlines()
-    txt = " ".join(txt)
-    txt = txt.replace('\n',' ')
+    with open(main.args.input_file, encoding='iso-8859-1') as input_file:
+        txt = input_file.readlines()
+        txt = " ".join(txt)
+        txt = txt.replace('\n', ' ')
 
 titles_list = load_lists(fpath)['MS_TITLES']
 titles_list = titles_list.replace("'", "").strip('][').split(', ')
