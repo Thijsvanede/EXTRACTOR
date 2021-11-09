@@ -14,9 +14,9 @@ import re
 import signal
 import spacy
 
-# TODO - move load somewhere else?
-nlp = spacy.load("en_core_web_lg")
-
+################################################################################
+#                                  Functions                                   #
+################################################################################
 
 def delete_brackets(string):
     """Removes square brackets in string."""
@@ -40,8 +40,6 @@ def coref_(stri):
 
 def SIGSEGV_signal_arises(signalNum, stack):
     print(f"{signalNum} : SIGSEGV arises")
-
-signal.signal(signal.SIGSEGV, SIGSEGV_signal_arises)
 
 def wild_card_extansions(stri):
     pat = load_patterns(path)
@@ -238,7 +236,6 @@ def homogenization(stri):
         finalsent += ' ' +sent + ' '
     return finalsent
 
-print("------------communicate ---------------")
 def communicate_to_sr(stri):
     final_txt = ''
     c = fl = 0
@@ -300,13 +297,25 @@ def verb_and_verb(txt):
             break
     return result
 
+
+################################################################################
+#                             TODO - move to main?                             #
+################################################################################
+
+print(txt)
+print("How the fuck do we already have access to the txt variable?")
+exit()
+
+# TODO - move load somewhere else?
+nlp = spacy.load("en_core_web_lg")
+signal.signal(signal.SIGSEGV, SIGSEGV_signal_arises)
+
+print("------------communicate ---------------")
 txt = sentence_tokenizer()
 txt = delete_brackets(txt)
 txt = pass2acti(txt)
 txt = re.sub(' +', ' ', txt)
 print("*********8",txt)
-
-
 
 import main
 
