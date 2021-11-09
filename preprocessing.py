@@ -5,9 +5,9 @@ from load_lists_general import all_lst
 from load_pattern       import load_patterns, path
 from nltk               import sent_tokenize
 from passive2active     import pass2act
-from pattern.text.en    import conjugate, PRESENT, SG
+from pattern.text.en    import conjugate, PRESENT, SG # TODO - check
 from textblob           import TextBlob
-from tokenizer          import sentence_tokenizer
+from tokenizer          import sentence_tokenizer # TODO - check
 import neuralcoref
 import nltk
 import re
@@ -298,13 +298,30 @@ def verb_and_verb(txt):
     return result
 
 
+def modification_():
+    final_txt = ''
+    c = fl = 0
+    pattern = load_lists(fpath)['MDF']
+    pattern = pattern.replace("'", "").strip('][').split(', ')
+
+    sentences = sent_tokenize(cc)
+    for sentence in sentences:
+        c += 1
+        for value in pattern:
+            if value in sentence:
+                sentence1 = sentence.split(value)[0] + ' modifies ' + sentence.split(value)[1]
+                final_txt += " " + sentence1 + " "
+                fl += 2
+                break
+        if c > fl:
+            final_txt += " " + sentence
+            fl += 1
+    return final_txt.strip()
+
+
 ################################################################################
 #                             TODO - move to main?                             #
 ################################################################################
-
-print(txt)
-print("How the fuck do we already have access to the txt variable?")
-exit()
 
 # TODO - move load somewhere else?
 nlp = spacy.load("en_core_web_lg")
@@ -357,26 +374,6 @@ comm = communicate_to_sr(homo)
 print(comm)
 cc = CـC(comm)
 print("------------ modification ---------------")
-
-def modification_():
-    final_txt = ''
-    c = fl = 0
-    pattern = load_lists(fpath)['MDF']
-    pattern = pattern.replace("'", "").strip('][').split(', ')
-
-    sentences = sent_tokenize(cc)
-    for sentence in sentences:
-        c += 1
-        for value in pattern:
-            if value in sentence:
-                sentence1 = sentence.split(value)[0] + ' modifies ' + sentence.split(value)[1]
-                final_txt += " " + sentence1 + " "
-                fl += 2
-                break
-        if c > fl:
-            final_txt += " " + sentence
-            fl += 1
-    return final_txt.strip()
 
 
 print('----Preprocessed:----')

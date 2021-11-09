@@ -14,12 +14,12 @@ parser = argparse.ArgumentParser(
 )
 
 # Optional arguments
-parser.add_argument('--asterisk'  , type=str, default='true', help='asterisk task')
-parser.add_argument('--crf'       , type=str, default='true', help='crf task')
-parser.add_argument('--rmdup'     , type=str, default='true', help='remove duplicate task')
-parser.add_argument('--elip'      , type=str, default='false', help='ellipsis resolution')
-parser.add_argument('--gname'     , type=str, default='graph', help='graph name')
-parser.add_argument('--input_file', type=str, help='input file')
+parser.add_argument('--asterisk', type=str, default='true', help='asterisk task')
+parser.add_argument('--crf'     , type=str, default='true', help='crf task')
+parser.add_argument('--rmdup'   , type=str, default='true', help='remove duplicate task')
+parser.add_argument('--elip'    , type=str, default='false', help='ellipsis resolution')
+parser.add_argument('--gname'   , type=str, default='graph', help='graph name')
+parser.add_argument('input_file', type=str, help='input file')
 
 # Parse arguments
 args = parser.parse_args()
