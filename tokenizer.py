@@ -1,17 +1,17 @@
 import spacy
 from nltk import sent_tokenize
-from lists_patterns import load_lists,fpath
+from lists_patterns import load_lists, fpath
 
 ################################################################################
 #                                  Functions                                   #
 ################################################################################
 
 def delete_brackets(stri):
-    stri = stri.replace("[","")
-    stri = stri.replace("]", "")
-    stri = stri.replace("<", "")
-    stri = stri.replace(">", "")
-    return stri
+    """Delete all brackets"""
+    return stri.replace("[", "")\
+               .replace("]", "")\
+               .replace("<", "")\
+               .replace(">", "")
 
 def all_sentences(string):
     nltk_sentences = sent_tokenize(string)
@@ -28,12 +28,24 @@ def all_sentences(string):
     return all_sentences_list
 
 def remove_analysis_by(txt):
-    var = "Analysis by"
-    lst = all_sentences(txt)
-    for i in lst:
-        if i.startswith(var):
-            lst.remove(i)
-    return lst
+    return [
+        sentence for sentence in all_sentences(txt)
+        if not sentence.startswith("Analysis by")
+    ]
+
+# ################################################################################
+# #                                    Class                                     #
+# ################################################################################
+#
+# class Tokenizer():
+#
+#     def __init__(self, nlp):
+#         """Provides all functions for tokenizing text."""
+#         self.nlp = nlp
+
+########################################################################
+#                              Functions                               #
+########################################################################
 
 def perform_following_action(txt):  # When Virus:Win32/Funlove.4099 runs, it performs the following actions:
     perform_following_action_list = load_lists(fpath)['MS_PFA']
@@ -70,7 +82,7 @@ def removable_token(txt):  # When Virus:Win32/Funlove.4099 runs, it performs the
                 # break
     return lst
 
-def handle_title(mylist_):  # handles titles and "." of the previous sentence
+def handle_title(mylist_, titles_list):  # handles titles and "." of the previous sentence
     lst_handled_titles = []
     lst = list(filter(lambda a: a != "", mylist_))[::-1]
     lst = list(filter(lambda a: a != " ", lst))
@@ -173,12 +185,12 @@ def likely_sentence_characteristic(sentence, nlp):
     else:
         return False
 
-def sentence_tokenizer():
+def sentence_tokenizer(all_sentences_list, titles_list, nlp, main_verbs):
     num = 0
     possible_sentence = ""
     sentnce_buffer = ""
     if len(all_sentences_list) > 1:
-        handele_titles = handle_title(all_sentences_list)
+        handele_titles = handle_title(all_sentences_list, titles_list)
     else:
         handele_titles = all_sentences_list
     sentences_list = []
@@ -197,7 +209,7 @@ def sentence_tokenizer():
         if num < l:
             xyz = sentences_list[i]
             if sentences_list[i].rstrip()[-1] == ".":
-                if sentence_characteristic(sentences_list[i]) == True:
+                if sentence_characteristic(sentences_list[i], nlp) == True:
                     possible_sentence += sentences_list[i] + " "
                     num += 1
                 elif len(sentences_list[i].split(" ")) > 3 and sentences_list[i].split(" ")[0].lower() in main_verbs:
@@ -209,10 +221,10 @@ def sentence_tokenizer():
                     num += 1
             elif zero_word_verb(sentences_list[i]) and ":" not in sentences_list[i].strip():
                 if num != l - 1:
-                    if sentence_characteristic(sentences_list[i + 1]) == True or  zero_word_verb(sentences_list[i + 1]):
+                    if sentence_characteristic(sentences_list[i + 1], nlp) == True or  zero_word_verb(sentences_list[i + 1]):
                         possible_sentence += sentences_list[i].strip() + " . "
                         num += 1
-                    elif sentence_characteristic(sentences_list[i + 1]) == False or not zero_word_verb(sentences_list[i + 1]):
+                    elif sentence_characteristic(sentences_list[i + 1], nlp) == False or not zero_word_verb(sentences_list[i + 1]):
                         sentnce_buffer += sentences_list[i].strip()
                         num += 1
                         sentnce_buffer += sentences_list[i + 1]
@@ -227,8 +239,8 @@ def sentence_tokenizer():
                     num += 1
                     # if zero_word_verb(sentences_list[i+1]):
                     if num < l:
-                        while not likely_sentence_characteristic(sentences_list[i + 1]):  #### whattttt? #######!!!!!!!!######## or sentences_list[i+1].rstrip()[-1]!="." BELOWWW
-                            # or sentence_characteristic(sentences_list[i+1]) ==True and sentences_list[i+1].rstrip()[-1]!="."
+                        while not likely_sentence_characteristic(sentences_list[i + 1], nlp):  #### whattttt? #######!!!!!!!!######## or sentences_list[i+1].rstrip()[-1]!="." BELOWWW
+                            # or sentence_characteristic(sentences_list[i+1], nlp) ==True and sentences_list[i+1].rstrip()[-1]!="."
                             sentnce_buffer += sentences_list[i + 1] + " "
                             num += 1
                             sentences_list[i + 1]
@@ -277,7 +289,7 @@ def sentence_tokenizer():
                 else:
                     sentnce_buffer += sentences_list[i] + " "
                     num += 1
-                    while not(sentence_characteristic( sentences_list[i + 1]))    :
+                    while not(sentence_characteristic( sentences_list[i + 1], nlp))    :
                         xxx = sentences_list[i + 1]
                         if  zero_word_verb(sentences_list[i + 1]):
                             break
@@ -292,7 +304,7 @@ def sentence_tokenizer():
                                 possible_sentence += sentnce_buffer
                                 sentnce_buffer = ""
                                 break
-                    # if not sentence_characteristic(sentences_list[i + 1]):
+                    # if not sentence_characteristic(sentences_list[i + 1], nlp):
                     #     sentnce_buffer += sentences_list[i + 1]
                     #     num += 1
                     #     del sentences_list[i + 1]
@@ -305,7 +317,7 @@ def sentence_tokenizer():
                     #     sentnce_buffer.rstrip().replace(":",".")
                     #     possible_sentence += sentnce_buffer
                     #     sentnce_buffer = " "
-            elif sentence_characteristic(sentences_list[i]) == True:
+            elif sentence_characteristic(sentences_list[i], nlp) == True:
                 possible_sentence += sentences_list[i].strip() + " . "
                 num += 1
             else:
@@ -319,41 +331,3 @@ def sentence_tokenizer():
             del posslist[indx]
     possible_sentence = " ".join(posslist)
     return possible_sentence
-
-
-
-
-################################################################################
-#                      Stuff that should be moved to main                      #
-################################################################################
-
-print("Start tokenizer")
-import main
-if not main.args.input_file:
-    raise ValueError("usage: main.py [-h] [--asterisk ASTERISK] [--crf CRF] [--rmdup RMDUP] [--gname GNAME] [--input_file INPUT_FILE]")
-else:
-    with open(main.args.input_file, encoding='iso-8859-1') as input_file:
-        txt = input_file.readlines()
-        txt = " ".join(txt)
-        txt = txt.replace('\n', ' ')
-
-titles_list = load_lists(fpath)['MS_TITLES']
-titles_list = titles_list.replace("'", "").strip('][').split(', ')
-main_verbs = load_lists(fpath)['verbs']
-main_verbs = main_verbs.replace("'", "").strip('][').split(', ')
-
-txt = delete_brackets(txt)
-txt = txt.strip(" ")
-
-all_sentences_list = removable_token(txt)
-
-txt_tokenized = sentence_tokenizer()
-print("*****sentence_tokenizer:", len(sent_tokenize(txt_tokenized)), sentence_tokenizer())
-
-print("*****Tokenizer*****")
-
-for i,val in enumerate(sent_tokenize(txt_tokenized)):
-    print(i,val)
-
-
-print("End tokenizer")
