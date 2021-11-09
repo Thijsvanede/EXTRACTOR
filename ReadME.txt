@@ -1,1 +1,0 @@
-python main.py --asterisk false --crf true --rmdup false --input_file input.txt
