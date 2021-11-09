@@ -29,7 +29,7 @@ def pass2acti(stri):
         result += pa2act
     return result
 
-def coref_(stri):
+def coref_(stri, nlp):
     neuralcoref.add_to_pipe(nlp)
     doc = nlp(stri)
     corefed = doc._.coref_resolved.replace("\n", "")
@@ -84,7 +84,7 @@ def is_capable_of(stri):
                     outcome += " " + sent
     return outcome
 
-def ellipsis_subject(stri):
+def ellipsis_subject(stri, nlp):
     ellipsis_verbs = load_lists(fpath)['verbs']
     ellipsis_verbs = ellipsis_verbs.replace("'", "").strip('][').split(', ')
     sent_text = nltk.sent_tokenize(stri)
@@ -105,7 +105,7 @@ def ellipsis_subject(stri):
             result += " " + sentence
     return result
 
-def detect_subj(sentence_list):
+def detect_subj(sentence_list, nlp):
     # buffer_nsubj = {}
     subject = ''
     for sentence in sentence_list:
@@ -118,7 +118,7 @@ def detect_subj(sentence_list):
     if subject:
         return subject
 
-def zero_word_verb(stri):
+def zero_word_verb(stri, nlp):
     doc = nlp(stri.strip())
     main_verbs = load_lists(fpath)['verbs']
     main_verbs = main_verbs.replace("'", "").strip('][').split(', ')
@@ -284,7 +284,7 @@ def following_subject(txt):
                 break
     return result
 
-def verb_and_verb(txt):
+def verb_and_verb(txt, nlp):
     verbs_list = load_lists(fpath)['verbs']
     doc = nlp(txt)
     result = ""
@@ -324,7 +324,6 @@ def modification_():
 ################################################################################
 
 # TODO - move load somewhere else?
-nlp = spacy.load("en_core_web_lg")
 signal.signal(signal.SIGSEGV, SIGSEGV_signal_arises)
 
 print("------------communicate ---------------")
@@ -335,9 +334,10 @@ txt = re.sub(' +', ' ', txt)
 print("*********8",txt)
 
 import main
+from main import nlp
 
 if main.args.crf == 'true':
-    txt = coref_(txt)
+    txt = coref_(txt, nlp)
     print("coref_",len(txt),txt)
 else:
     txt = wild_card_extansions(txt)
@@ -351,7 +351,7 @@ if main.args.elip == 'true':
     txt = replcae_surrounding_subject(txt)
 else:
     print("is capble of__",txt)
-    txt = ellipsis_subject(txt)
+    txt = ellipsis_subject(txt, nlp)
     print("ellipsis_subject", len(txt), txt)
 
 print('------------ coref_the_following_colon ------------')

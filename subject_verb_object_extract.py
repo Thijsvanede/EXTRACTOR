@@ -12,10 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# use spacy small model
-# nlp = en_core_web_lg.load()
-import spacy
-nlp = spacy.load('en_core_web_lg')
 from lists_patterns import load_lists,fpath
 
 # dependency markers for subjects
@@ -217,7 +213,7 @@ def _get_that_resolution(toks):
 
 
 # simple stemmer using lemmas
-def _get_lemma(word):
+def _get_lemma(word, nlp):
     tokens = nlp(word)
     if len(tokens) == 1:
         return tokens[0].lemma_

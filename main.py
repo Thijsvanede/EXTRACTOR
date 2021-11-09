@@ -8,6 +8,10 @@ import preprocessing
 import role_generator
 import graph_generator
 
+# Load NLP module
+import spacy
+nlp = spacy.load('en_core_web_lg')
+
 # Parse arguments
 parser = argparse.ArgumentParser(
     formatter_class = argformat.StructuredFormatter,

@@ -1,6 +1,5 @@
 import spacy
 from nltk import sent_tokenize
-nlp = spacy.load("en_core_web_lg")
 from lists_patterns import load_lists,fpath
 import main
 if not main.args.input_file:
@@ -129,7 +128,7 @@ def handle_title(mylist_):  # handles titles and "." of the previous sentence
     lst = list(filter(lambda a: a != " ", lst))
     return list(filter(lambda a: a != "", lst))
 
-def zero_word_verb(string):
+def zero_word_verb(string, nlp):
     doc = nlp(string.strip())
     if not (doc[0].tag_ == "MD") and\
             not (doc[0].tag_ == "VB" and
@@ -152,7 +151,7 @@ def iscaptalized(sentence):
     else:
         return False
 
-def sentence_characteristic(sentence):
+def sentence_characteristic(sentence, nlp):
     doc = nlp(sentence)
     if len(sentence.split(" ")) > 3:
         count_verb, count_noun = 0, 0
@@ -166,7 +165,7 @@ def sentence_characteristic(sentence):
     else:
         return False
 
-def likely_sentence_characteristic(sentence):
+def likely_sentence_characteristic(sentence, nlp):
     doc = nlp(sentence)
     if zero_word_verb(sentence) == True:
         if len(sentence.split(" ")) > 3:

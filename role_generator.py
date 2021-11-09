@@ -1,5 +1,4 @@
-from subject_verb_object_extract import findSVOs, nlp
-# nlp = spacy.load("en_core_web_lg")
+from subject_verb_object_extract import findSVOs
 from allennlp.predictors.predictor import Predictor
 from nltk.stem.wordnet import WordNetLemmatizer
 from preprocessing import *
@@ -40,7 +39,7 @@ def colon_seprator_multiplication(stri):
         result += "."
     return result
 
-def roles(sentences):
+def roles(sentences, nlp):
     my_svo_triplet = []
     all_nodes = []
     for i in range(len(sentences)):

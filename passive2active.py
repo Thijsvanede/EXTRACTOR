@@ -11,9 +11,7 @@ def nouninv(noun):
         return noundict[n]
     return noun
 
-nlp = spacy.load("en_core_web_lg")
-
-def pass2act(doc, rec=False):
+def pass2act(doc, nlp, rec=False):
     parse = nlp(doc)
     newdoc = ''
     for sent in parse.sents:
