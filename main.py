@@ -1,6 +1,7 @@
 # Imports
 import argformat
 import argparse
+import re
 from nltk import sent_tokenize
 
 # Imports from package
@@ -35,7 +36,7 @@ if __name__ == "__main__":
     txt = role_generator.colon_seprator_multiplication(txt)
     txt = re.sub(' +', ' ', txt)
     sentences_ = sent_tokenize(txt)
-    lst = role_generator.roles(sentences_)
+    lst = role_generator.roles(sentences_, nlp)
     lst = role_generator.fix_srl_spacing(lst)
     all_nodes = role_generator.negation_clauses(lst)
     if args.asterisk == 'true':

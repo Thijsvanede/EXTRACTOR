@@ -27,7 +27,7 @@ def all_sentences(string):
                 all_sentences_list.append(j)
     return all_sentences_list
 
-def remove_analysis_by():
+def remove_analysis_by(txt):
     var = "Analysis by"
     lst = all_sentences(txt)
     for i in lst:
@@ -35,10 +35,10 @@ def remove_analysis_by():
             lst.remove(i)
     return lst
 
-def perform_following_action():  # When Virus:Win32/Funlove.4099 runs, it performs the following actions:
+def perform_following_action(txt):  # When Virus:Win32/Funlove.4099 runs, it performs the following actions:
     perform_following_action_list = load_lists(fpath)['MS_PFA']
     perform_following_action_list = perform_following_action_list.replace("'", "").strip('][').split(', ')
-    lst = remove_analysis_by()
+    lst = remove_analysis_by(txt)
     for i in lst:
         for j in perform_following_action_list:
             if j in i:
@@ -46,11 +46,11 @@ def perform_following_action():  # When Virus:Win32/Funlove.4099 runs, it perfor
                 break
     return lst
 
-def on_the_windows_x_only():
+def on_the_windows_x_only(txt):
     # on_the_windows_x_list = load_lists_microsoft.on_the_windows_x_lst()
     on_the_windows_x_list = load_lists(fpath)['MS_OTW']
     on_the_windows_x_list = on_the_windows_x_list.replace("'", "").strip('][').split(', ')
-    lst = perform_following_action()
+    lst = perform_following_action(txt)
     for i in lst:
         for j in on_the_windows_x_list:
             if j == i:
@@ -58,10 +58,10 @@ def on_the_windows_x_only():
                 # break
     return lst
 
-def removable_token():  # When Virus:Win32/Funlove.4099 runs, it performs the following actions:
+def removable_token(txt):  # When Virus:Win32/Funlove.4099 runs, it performs the following actions:
     removable_token_list = load_lists(fpath)['RTL']
     removable_token_list = removable_token_list.replace("'", "").strip('][').split(', ')
-    lst = on_the_windows_x_only()
+    lst = on_the_windows_x_only(txt)
     for id, value in enumerate(lst):
         for j in removable_token_list:
             if value.strip().startswith(j):  #### definetly remember we should use only startswith()for proper matching
@@ -327,6 +327,7 @@ def sentence_tokenizer():
 #                      Stuff that should be moved to main                      #
 ################################################################################
 
+print("Start tokenizer")
 import main
 if not main.args.input_file:
     raise ValueError("usage: main.py [-h] [--asterisk ASTERISK] [--crf CRF] [--rmdup RMDUP] [--gname GNAME] [--input_file INPUT_FILE]")
@@ -344,7 +345,7 @@ main_verbs = main_verbs.replace("'", "").strip('][').split(', ')
 txt = delete_brackets(txt)
 txt = txt.strip(" ")
 
-all_sentences_list = removable_token()
+all_sentences_list = removable_token(txt)
 
 txt_tokenized = sentence_tokenizer()
 print("*****sentence_tokenizer:", len(sent_tokenize(txt_tokenized)), sentence_tokenizer())
@@ -353,3 +354,6 @@ print("*****Tokenizer*****")
 
 for i,val in enumerate(sent_tokenize(txt_tokenized)):
     print(i,val)
+
+
+print("End tokenizer")

@@ -27,10 +27,18 @@ In addition to the required packages, please also install the following modules:
 python3 -m spacy download en_core_web_lg
 ```
 
-Also, you should install the following nltk modules:
 ```python
 import nltk
 nltk.download('punkt')
+```
+
+```bash
+wget -c -t 0 https://s3-us-west-2.amazonaws.com/allennlp/models/srl-model-2018.05.25.tar.gz
+mv srl-model-2018.05.25.tar.gz srl-model.tar.gz
+```
+
+```bash
+sudo apt install graphviz
 ```
 
 ### Usage

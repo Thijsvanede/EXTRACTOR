@@ -35,7 +35,7 @@ def colon_seprator_multiplication(stri):
             result += item
             result += " "
 
-    if result.rstrip("")[-1] != ".":
+    if not result.rstrip("") or result.rstrip("")[-1] != ".":
         result += "."
     return result
 

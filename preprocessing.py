@@ -323,6 +323,8 @@ def modification_():
 #                             TODO - move to main?                             #
 ################################################################################
 
+print("Start preprocessing")
+
 # TODO - move load somewhere else?
 signal.signal(signal.SIGSEGV, SIGSEGV_signal_arises)
 
@@ -379,3 +381,5 @@ print("------------ modification ---------------")
 print('----Preprocessed:----')
 for i,val in enumerate(sent_tokenize(modification_())):
     print(i,val)
+
+print("End preprocessing")
