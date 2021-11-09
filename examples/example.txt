@@ -1,0 +1,150 @@
+
+
+
+This post is also available in:
+     \u65e5\u672c\u8a9e  ( Japanese )
+
+Executive Summary
+
+Unit 42 researchers have been credited with discovering 15 new vulnerabilities addressed by the  Microsoft Security Response Center (MSRC) ,  Adobe Security Bulletin  and  Apple Security Updates , as part of the last quarter of security update releases.
+
+Vulnerabilities
+
+Of the 15 new vulnerabilities credited to Unit 42 researchers, 10 come from Microsoft with severity ratings from low to important. The four Adobe Reader DC vulnerabilities are all critical bugs that allow remote code execution (RCE). Lastly, there is an Apple cross site scripting (XSS) vulnerability that could also lead to arbitrary RCE in the context of the currently logged in user.
+
+The Unit 42 researchers credited are Tao Yan, Zhibin Zhang, Bo Qu, Ronen Haber and Ken Hsu.
+
+The recently discovered vulnerabilities are listed in Table 1 below:
+
+
+
+
+ Vendor
+ CVE
+ Description
+ Type
+ Researcher(s)
+
+
+ Microsoft
+ CVE-2020-16876
+ Windows Application Compatibility Client Library Elevation of Privilege Vulnerability
+ Privilege Escalation
+ Tao Yan
+
+
+ Microsoft
+ CVE-2020-16895
+ Windows Error Reporting Manager Elevation of Privilege Vulnerability
+ Privilege Escalation
+ Tao Yan
+
+
+ Microsoft
+ CVE-2020-16924
+ Jet Database Engine Remote Code Execution Vulnerability
+ Remote Code Execution
+ Zhibin Zhang
+
+
+ Microsoft
+ CVE-2020-17007
+ Windows Error Reporting Elevation of Privilege Vulnerability
+ Privilege Escalation
+ Tao Yan
+
+
+ Microsoft
+ CVE-2020-17046
+ Windows Error Reporting Denial of Service Vulnerability
+ Denial of Service
+ Tao Yan
+
+
+ Microsoft
+ CVE-2020-17062
+ Microsoft Office Access Connectivity Engine Remote Code Execution Vulnerability
+ Remote Code Execution
+ Zhibin Zhang
+
+
+ Microsoft
+ CVE-2020-17094
+ Windows Error Reporting Information Disclosure Vulnerability
+ Information Disclosure
+ Tao Yan, Bo Qu
+
+
+ Microsoft
+ CVE-2020-17138
+ Windows Error Reporting Information Disclosure Vulnerability
+ Information Disclosure
+ Tao Yan
+
+
+ Apple
+ CVE-2020-10012
+ Quick Look Cross Site Scripting Vulnerability
+ Cross Site Script
+ Bo Qu
+
+
+ Microsoft
+ CVE-2021-1703
+ Windows Event Logging Service Elevation of Privilege Vulnerability
+ Privilege Escalation
+ Ronen Haber
+
+
+ Microsoft
+ CVE-2021-1711
+ Microsoft Office Remote Code Execution Vulnerability
+ Remote Code Execution
+ Tao Yan, Bo Qu
+
+
+ Adobe
+ CVE-2021-21058
+ Adobe Reader DC Memory Corruption Vulnerability
+ Remote Code Execution
+ Ken Hsu
+
+
+ Adobe
+ CVE-2021-21059
+ Adobe Reader DC Memory Corruption Vulnerability
+ Remote Code Execution
+ Ken Hsu
+
+
+ Adobe
+ CVE-2021-21062
+ Adobe Reader DC Memory Corruption Vulnerability
+ Remote Code Execution
+ Ken Hsu, Bo Qu
+
+
+ Adobe
+ CVE-2021-21063
+ Adobe Reader DC Memory Corruption Vulnerability
+ Remote Code Execution
+ Ken Hsu, Zhibin Zhang
+
+
+
+
+Table 1. List of vulnerabilities.
+
+Specifically, the patch of CVE-2021-1711 addresses a new type of security issue that Unit 42 researchers discovered. Tao Yan, Qi Deng and Bo Qu will share more technical details at  Black Hat Asia 2021 .
+
+Conclusion
+
+Palo Alto Networks  Next-Generation Firewall  customers deploying a  Threat Prevention  security subscription, which includes capabilities such as vulnerability protection with an intrusion prevention system (IPS), are protected from zero-day vulnerabilities such as these. The  WildFire  security subscription provides our customers with comprehensive protection and automatic updates against previously unknown threats.
+
+Weaponized exploits for these vulnerabilities are prevented by  Cortex XDR\u2019s  multi-layered exploit prevention capabilities.
+
+Palo Alto Networks is a regular contributor to vulnerability research in Microsoft, Adobe, Apple, Google Android and other ecosystems, with more than 300 critical vulnerabilities discovered. Our researchers give regular talks at security conferences such as Black Hat, Blue Hat and REcon.
+
+By proactively identifying these vulnerabilities, developing protections for our customers and sharing the information with the security community, we are removing weapons used by attackers to threaten users and compromise enterprise, government and service provider networks.
+
+\u00a0
