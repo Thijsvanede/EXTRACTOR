@@ -1,26 +1,26 @@
-import re
-from tokenizer import sentence_tokenizer
-from passive2active import pass2act
-import nltk
-from nltk import sent_tokenize
-from textblob import TextBlob
-from pattern.text.en import conjugate,PRESENT,SG
-import spacy
-nlp = spacy.load("en_core_web_lg")
-import signal
-import neuralcoref
-from lists_patterns import load_lists,fpath
-preprocessing_input = sentence_tokenizer()
-from load_pattern import load_patterns,path
-from list_iocs import iocs
+# Imports
+from list_iocs          import iocs
+from lists_patterns     import load_lists, fpath
 from load_lists_general import all_lst
+from load_pattern       import load_patterns, path
+from nltk               import sent_tokenize
+from passive2active     import pass2act
+from pattern.text.en    import conjugate, PRESENT, SG
+from textblob           import TextBlob
+from tokenizer          import sentence_tokenizer
+import neuralcoref
+import nltk
+import re
+import signal
+import spacy
+
+# TODO - move load somewhere else?
+nlp = spacy.load("en_core_web_lg")
 
 
-
-def delete_brackets(stri):
-    stri = stri.replace("[","")
-    stri = stri.replace("]", "")
-    return stri
+def delete_brackets(string):
+    """Removes square brackets in string."""
+    return string.replace("[", "").replace("]", "")
 
 def pass2acti(stri):
     result = ' '
@@ -40,6 +40,7 @@ def coref_(stri):
 
 def SIGSEGV_signal_arises(signalNum, stack):
     print(f"{signalNum} : SIGSEGV arises")
+
 signal.signal(signal.SIGSEGV, SIGSEGV_signal_arises)
 
 def wild_card_extansions(stri):
@@ -299,7 +300,7 @@ def verb_and_verb(txt):
             break
     return result
 
-txt = preprocessing_input
+txt = sentence_tokenizer()
 txt = delete_brackets(txt)
 txt = pass2acti(txt)
 txt = re.sub(' +', ' ', txt)
@@ -372,6 +373,3 @@ def modification_():
 print('----Preprocessed:----')
 for i,val in enumerate(sent_tokenize(modification_())):
     print(i,val)
-
-
-
