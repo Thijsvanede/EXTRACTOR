@@ -1,19 +1,10 @@
 import spacy
 from nltk import sent_tokenize
 from lists_patterns import load_lists,fpath
-import main
-if not main.args.input_file:
-    raise ValueError("usage: main.py [-h] [--asterisk ASTERISK] [--crf CRF] [--rmdup RMDUP] [--gname GNAME] [--input_file INPUT_FILE]")
-else:
-    with open(main.args.input_file, encoding='iso-8859-1') as input_file:
-        txt = input_file.readlines()
-        txt = " ".join(txt)
-        txt = txt.replace('\n', ' ')
 
-titles_list = load_lists(fpath)['MS_TITLES']
-titles_list = titles_list.replace("'", "").strip('][').split(', ')
-main_verbs = load_lists(fpath)['verbs']
-main_verbs = main_verbs.replace("'", "").strip('][').split(', ')
+################################################################################
+#                                  Functions                                   #
+################################################################################
 
 def delete_brackets(stri):
     stri = stri.replace("[","")
@@ -21,8 +12,6 @@ def delete_brackets(stri):
     stri = stri.replace("<", "")
     stri = stri.replace(">", "")
     return stri
-txt = delete_brackets(txt)
-txt = txt.strip(" ")
 
 def all_sentences(string):
     nltk_sentences = sent_tokenize(string)
@@ -80,8 +69,6 @@ def removable_token():  # When Virus:Win32/Funlove.4099 runs, it performs the fo
                 lst[id] = value.replace(j, " ")
                 # break
     return lst
-all_sentences_list = removable_token()
-
 
 def handle_title(mylist_):  # handles titles and "." of the previous sentence
     lst_handled_titles = []
@@ -332,6 +319,32 @@ def sentence_tokenizer():
             del posslist[indx]
     possible_sentence = " ".join(posslist)
     return possible_sentence
+
+
+
+
+################################################################################
+#                      Stuff that should be moved to main                      #
+################################################################################
+
+import main
+if not main.args.input_file:
+    raise ValueError("usage: main.py [-h] [--asterisk ASTERISK] [--crf CRF] [--rmdup RMDUP] [--gname GNAME] [--input_file INPUT_FILE]")
+else:
+    with open(main.args.input_file, encoding='iso-8859-1') as input_file:
+        txt = input_file.readlines()
+        txt = " ".join(txt)
+        txt = txt.replace('\n', ' ')
+
+titles_list = load_lists(fpath)['MS_TITLES']
+titles_list = titles_list.replace("'", "").strip('][').split(', ')
+main_verbs = load_lists(fpath)['verbs']
+main_verbs = main_verbs.replace("'", "").strip('][').split(', ')
+
+txt = delete_brackets(txt)
+txt = txt.strip(" ")
+
+all_sentences_list = removable_token()
 
 txt_tokenized = sentence_tokenizer()
 print("*****sentence_tokenizer:", len(sent_tokenize(txt_tokenized)), sentence_tokenizer())
