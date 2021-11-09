@@ -35,6 +35,10 @@ def colon_seprator_multiplication(stri):
         if flag == False:
             result += item
             result += " "
+
+    print(result)
+    print(result.rstrip)
+    exit()
     if result.rstrip("")[-1] != ".":
         result += "."
     return result
