@@ -1,4 +1,3 @@
-import spacy
 from nltk import sent_tokenize
 from lists_patterns import load_lists, fpath
 
