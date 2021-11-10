@@ -1,6 +1,5 @@
 # Imports
 from list_iocs          import iocs
-from lists_patterns     import load_lists, fpath
 from load_lists_general import all_lst
 from load_pattern       import load_patterns, path
 from nltk               import sent_tokenize
@@ -81,9 +80,8 @@ def is_capable_of(stri):
                     outcome += " " + sent
     return outcome
 
-def ellipsis_subject(stri, nlp):
-    ellipsis_verbs = load_lists(fpath)['verbs']
-    ellipsis_verbs = ellipsis_verbs.replace("'", "").strip('][').split(', ')
+def ellipsis_subject(stri, nlp, loaded_lists):
+    ellipsis_verbs = loaded_lists['verbs']
     sent_text = nltk.sent_tokenize(stri)
     result = ""
     for sentence in sent_text:
@@ -93,7 +91,7 @@ def ellipsis_subject(stri, nlp):
             new_sentence = " It " + nltk.pos_tag(token)[0][0].lower() + " " + " ".join(sentence.split(" ")[1:])
             result += " " + new_sentence
         elif doc[0].dep_ == "ROOT":
-            if doc[0].text.lower in ellipsis_verbs:
+            if doc[0].text.lower() in ellipsis_verbs:
                 new_sentence = " It " + doc[0].text.lower() + " " + " ".join(sentence.split(" ")[1:])
                 result += " " + new_sentence
         elif doc[0].text.lower() in ellipsis_verbs and doc[0].dep_ != "ROOT":
@@ -115,10 +113,9 @@ def detect_subj(sentence_list, nlp):
     if subject:
         return subject
 
-def zero_word_verb(stri, nlp):
+def zero_word_verb(stri, nlp, loaded_lists):
     doc = nlp(stri.strip())
-    main_verbs = load_lists(fpath)['verbs']
-    main_verbs = main_verbs.replace("'", "").strip('][').split(', ')
+    main_verbs = loaded_lists['verbs']
     if not (doc[0].tag_ == "MD") and\
             not (doc[0].tag_ == "VB" and
                  str(doc[0]).lower() in main_verbs) and\
@@ -143,13 +140,12 @@ def replcae_surrounding_subject(stri):
             new_text += " " + sentence
     return new_text
 
-def coref_the_following_colon(stri):
+def coref_the_following_colon(stri, loaded_lists):
     sentence2 = ' '
     final_txt = ''
     fl = len(final_txt)
     # list1 = the_following_colon_lst()
-    list1 = load_lists(fpath)['TFCL']
-    list1 = list1.replace("'", "").strip('][').split(', ')
+    list1 = loaded_lists['TFCL']
     sentences = sent_tokenize(stri)
     l = len(sentences)
     c = 0
@@ -175,10 +171,9 @@ def coref_the_following_colon(stri):
             fl += 1
     return final_txt
 
-def coref_the_following_middle(stri):
+def coref_the_following_middle(stri, loaded_lists):
     final_txt= ''
-    list2 = load_lists(fpath)['TFL']
-    list2 = list2.replace("'", "").strip('][').split(', ')
+    list2 = loaded_lists['TFL']
     sentences = sent_tokenize(stri)
     c = 0
     fl = len(final_txt)
@@ -222,8 +217,7 @@ def translate_obscure_words(stri):
 def homogenization(stri):
     finalsent = ''
     vars = all_lst()
-    # vars = load_lists(fpath)['VAR']
-    # vars = vars.replace("'", "").strip('][').split(', ')
+    # vars = loaded_lists['VAR']
     sentences = sent_tokenize(stri)
     for index, sentence in enumerate(sentences):
         for var in vars:
@@ -233,11 +227,10 @@ def homogenization(stri):
         finalsent += ' ' +sent + ' '
     return finalsent
 
-def communicate_to_sr(stri):
+def communicate_to_sr(stri, loaded_lists):
     final_txt = ''
     c = fl = 0
-    pattern = load_lists(fpath)['COMU']
-    pattern = pattern.replace("'", "").strip('][').split(', ')
+    pattern = loaded_lists['COMU']
     sentences = sent_tokenize(stri)
     for sentence in sentences:
         c += 1
@@ -254,20 +247,19 @@ def communicate_to_sr(stri):
             fl += 1
     return final_txt
 
-def CـC(txt):
-    pattern = load_lists(fpath)['C_C']
-    pattern = pattern.replace("'", "").strip('][').split(', ')
+def CـC(txt, loaded_lists):
+    pattern = loaded_lists['C_C']
     big_regex = re.compile('|'.join(map(re.escape, pattern)),re.IGNORECASE)
     sentence = big_regex.sub('remote ip:*', str(txt))
     return sentence
 
-def following_subject(txt):
-    following_subject_list = load_lists(fpath)['TFSL']
+def following_subject(txt, loaded_lists):
+    # Method is never used. Deprecated?
     txt = txt.rstrip()
     txt = txt.rstrip('.')
     result = ""
     for sent in sent_tokenize(txt):
-        for item in following_subject_list:
+        for item in loaded_lists['TFSL']:
             if item in sent and ":" in sent:
                 old_subj = item
                 new_sub = sent.split(":" ,1)[1]
@@ -281,13 +273,13 @@ def following_subject(txt):
                 break
     return result
 
-def verb_and_verb(txt, nlp):
-    verbs_list = load_lists(fpath)['verbs']
+def verb_and_verb(txt, nlp, loaded_lists):
+    # Method is never used. Deprecated?
     doc = nlp(txt)
     result = ""
     for i in range(len(doc)+2):
         if doc[i].pos_ == "VERB" and doc[i+1].pos_ == "CCONJ" and doc[i+2].pos_  == "VERB":
-            if doc[i].text in verbs_list and doc[i+2].text in verbs_list:
+            if doc[i].text in loaded_lists['verbs'] and doc[i+2].text in loaded_lists['verbs']:
                 candidate = doc[i].text + " " + doc[i + 1].text + " " + doc[i + 2].text
                 result += txt.replace(candidate, doc[i].text)+ " "
                 result += txt.replace(candidate, doc[i+2].text)
@@ -295,11 +287,10 @@ def verb_and_verb(txt, nlp):
     return result
 
 
-def modification_(cc):
+def modification_(cc, loaded_lists):
     final_txt = ''
     c = fl = 0
-    pattern = load_lists(fpath)['MDF']
-    pattern = pattern.replace("'", "").strip('][').split(', ')
+    pattern = loaded_lists['MDF']
 
     sentences = sent_tokenize(cc)
     for sentence in sentences:

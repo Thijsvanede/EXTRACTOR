@@ -1,5 +1,4 @@
 from nltk import sent_tokenize
-from lists_patterns import load_lists, fpath
 
 ################################################################################
 #                                  Functions                                   #
@@ -46,9 +45,8 @@ def remove_analysis_by(txt):
 #                              Functions                               #
 ########################################################################
 
-def perform_following_action(txt):  # When Virus:Win32/Funlove.4099 runs, it performs the following actions:
-    perform_following_action_list = load_lists(fpath)['MS_PFA']
-    perform_following_action_list = perform_following_action_list.replace("'", "").strip('][').split(', ')
+def perform_following_action(txt, loaded_lists):  # When Virus:Win32/Funlove.4099 runs, it performs the following actions:
+    perform_following_action_list = loaded_lists['MS_PFA']
     lst = remove_analysis_by(txt)
     for i in lst:
         for j in perform_following_action_list:
@@ -57,11 +55,10 @@ def perform_following_action(txt):  # When Virus:Win32/Funlove.4099 runs, it per
                 break
     return lst
 
-def on_the_windows_x_only(txt):
+def on_the_windows_x_only(txt, loaded_lists):
     # on_the_windows_x_list = load_lists_microsoft.on_the_windows_x_lst()
-    on_the_windows_x_list = load_lists(fpath)['MS_OTW']
-    on_the_windows_x_list = on_the_windows_x_list.replace("'", "").strip('][').split(', ')
-    lst = perform_following_action(txt)
+    on_the_windows_x_list = loaded_lists['MS_OTW']
+    lst = perform_following_action(txt, loaded_lists)
     for i in lst:
         for j in on_the_windows_x_list:
             if j == i:
@@ -69,10 +66,9 @@ def on_the_windows_x_only(txt):
                 # break
     return lst
 
-def removable_token(txt):  # When Virus:Win32/Funlove.4099 runs, it performs the following actions:
-    removable_token_list = load_lists(fpath)['RTL']
-    removable_token_list = removable_token_list.replace("'", "").strip('][').split(', ')
-    lst = on_the_windows_x_only(txt)
+def removable_token(txt, loaded_lists):  # When Virus:Win32/Funlove.4099 runs, it performs the following actions:
+    removable_token_list = loaded_lists['RTL']
+    lst = on_the_windows_x_only(txt, loaded_lists)
     for id, value in enumerate(lst):
         for j in removable_token_list:
             if value.strip().startswith(j):  #### definetly remember we should use only startswith()for proper matching

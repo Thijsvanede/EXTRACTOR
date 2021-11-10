@@ -12,8 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from lists_patterns import load_lists,fpath
-
 # dependency markers for subjects
 SUBJECTS = {"nsubj", "nsubjpass", "csubj", "csubjpass", "agent", "expl"}
 # dependency markers for objects
@@ -266,14 +264,13 @@ def to_str(tokens):
 
 
 # find verbs and their subjects / objects to create SVOs, detect passive/active sentences
-def findSVOs(tokens):
+def findSVOs(tokens, loaded_lists):
     svos = []
     is_pas = _is_passive(tokens)
     verbs = [tok for tok in tokens if _is_non_aux_verb(tok)]
     # @kia
     if verbs == []:
-        main_verbs = load_lists(fpath)['verbs']
-        main_verbs = main_verbs.replace("'", "").strip('][').split(', ')
+        main_verbs = loaded_lists['verbs']
         verbs = [tok for tok in tokens if str(tok) in main_verbs]
     visited = set()  # recursion detection
     for v in verbs:

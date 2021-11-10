@@ -1,7 +1,6 @@
 # Imports
 from allennlp.predictors.predictor import Predictor
 from list_iocs                     import iocs
-from lists_patterns                import load_lists, fpath
 from load_pattern                  import load_patterns, path
 from nltk                          import sent_tokenize
 from nltk.stem.wordnet             import WordNetLemmatizer
@@ -11,15 +10,8 @@ import re
 # Can remove?
 from list_iocs import *
 
-# TODO - move to main
-main_verbs = load_lists(fpath)['verbs']
-main_verbs = main_verbs.replace("'", "").strip('][').split(', ')
-
-
-
-def colon_seprator_multiplication(stri):
-    coref_reference_list = load_lists(fpath)['TFL']
-    coref_reference_list = coref_reference_list.replace("'", "").strip('][').split(', ')
+def colon_seprator_multiplication(stri, loaded_lists):
+    coref_reference_list = loaded_lists['TFL']
     stri = stri.rstrip()
     stri = stri.rstrip('.')
     result = ""
@@ -47,7 +39,7 @@ def colon_seprator_multiplication(stri):
         result += "."
     return result
 
-def roles(sentences, nlp):
+def roles(sentences, nlp, main_verbs):
     my_svo_triplet = []
     all_nodes = []
 
@@ -339,9 +331,8 @@ def process_convert(lst):
     return [i.replace(" ", "-") for i in lst]
 
 
-def astriks(lis):
-    apps_process = load_lists(fpath)['APPs-PROCESS']
-    apps_process = apps_process.replace("'", "").strip('][').split(' , ')
+def astriks(lis, loaded_lists):
+    apps_process = loaded_lists['APPs-PROCESS']
     updated_list = [[] for x in range(len(lis))]
     for jj, lst in enumerate(lis):
         for i in range(len(lst)):

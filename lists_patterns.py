@@ -1,8 +1,6 @@
 # Imports
 import configparser
 
-fpath = "./Data/lists.ini"
-
 def load_lists(path):
     """Load lists from given file path."""
     # Initialise patterns
@@ -16,4 +14,7 @@ def load_lists(path):
         config.readfp(f)
 
     # Return result as dict
-    return {type: config.get(type, 'pattern') for type in config.sections()}
+    return {
+        type: config.get(type, 'pattern').replace("'", "").strip('][').split(', ')
+        for type in config.sections()
+    }

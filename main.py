@@ -32,6 +32,7 @@ if __name__ == "__main__":
     parser.add_argument('--rmdup'   , type=str, default='true' , help='remove duplicate task')
     parser.add_argument('--elip'    , type=str, default='false', help='ellipsis resolution')
     parser.add_argument('--gname'   , type=str, default='graph', help='graph name')
+    parser.add_argument('--fpath'   , type=str, default='./Data/lists.ini', help='path to lists')
 
     # Parse arguments
     args = parser.parse_args()
@@ -46,12 +47,12 @@ if __name__ == "__main__":
         text = " ".join(text)
         text = text.replace('\n', ' ')
 
-    from lists_patterns import load_lists, fpath
+    from lists_patterns import load_lists
 
     # Load lists
-    loaded_lists = load_lists(fpath)
-    titles_list  = loaded_lists['MS_TITLES'].replace("'", "").strip('][').split(', ')
-    main_verbs   = loaded_lists['verbs'    ].replace("'", "").strip('][').split(', ')
+    loaded_lists = load_lists(args.fpath)
+    titles_list  = loaded_lists['MS_TITLES']
+    main_verbs   = loaded_lists['verbs'    ]
 
 
     # Load NLP module
@@ -67,7 +68,7 @@ if __name__ == "__main__":
 
     # Tokenize text
     text = tokenizer.sentence_tokenizer(
-        tokenizer.removable_token(text),
+        tokenizer.removable_token(text, loaded_lists),
         titles_list,
         nlp,
         main_verbs,
@@ -104,18 +105,18 @@ if __name__ == "__main__":
         text = preprocessing.replcae_surrounding_subject(text)
     else:
         print("is capble of__",text)
-        text = preprocessing.ellipsis_subject(text, nlp)
+        text = preprocessing.ellipsis_subject(text, nlp, loaded_lists)
         print("ellipsis_subject", len(text), text)
 
     print('------------ coref_the_following_colon ------------')
-    out = preprocessing.coref_the_following_colon(text)
+    out = preprocessing.coref_the_following_colon(text, loaded_lists)
 
     for i,val in enumerate(tokenizer.sent_tokenize(out)):
         print(i,val)
 
     print('------------ coref_the_following_middle ------------')
 
-    midle = preprocessing.coref_the_following_middle(out)
+    midle = preprocessing.coref_the_following_middle(out, loaded_lists)
 
     for i,val in enumerate(tokenizer.sent_tokenize(midle)):
         print(i,val)
@@ -123,28 +124,28 @@ if __name__ == "__main__":
     out_translate = preprocessing.translate_obscure_words(out)
     print("*****homogenization:", preprocessing.homogenization(out_translate))
     homo = preprocessing.homogenization(out_translate)
-    comm = preprocessing.communicate_to_sr(homo)
+    comm = preprocessing.communicate_to_sr(homo, loaded_lists)
     print(comm)
-    cc = preprocessing.CـC(comm)
+    cc = preprocessing.CـC(comm, loaded_lists)
     print("------------ modification ---------------")
 
 
     print('----Preprocessed:----')
-    for i,val in enumerate(tokenizer.sent_tokenize(preprocessing.modification_(cc))):
+    for i,val in enumerate(tokenizer.sent_tokenize(preprocessing.modification_(cc, loaded_lists))):
         print(i,val)
 
     print("End preprocessing")
 
-    text = preprocessing.modification_(cc)
+    text = preprocessing.modification_(cc, loaded_lists)
     text = text.strip()
-    text = role_generator.colon_seprator_multiplication(text)
+    text = role_generator.colon_seprator_multiplication(text, loaded_lists)
     text = re.sub(' +', ' ', text)
     sentences_ = sent_tokenize(text)
-    lst = role_generator.roles(sentences_, nlp)
+    lst = role_generator.roles(sentences_, nlp, main_verbs)
     lst = role_generator.fix_srl_spacing(lst)
     all_nodes = role_generator.negation_clauses(lst)
     if args.asterisk == 'true':
-        all_nodes = role_generator.astriks(all_nodes)
+        all_nodes = role_generator.astriks(all_nodes, loaded_lists)
         all_nodes = role_generator.triplet_builder(all_nodes)
     else:
         all_nodes = role_generator.triplet_builder(all_nodes)
