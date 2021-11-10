@@ -14,25 +14,32 @@ import graph_generator
 import spacy
 nlp = spacy.load('en_core_web_lg')
 
-# Parse arguments
-parser = argparse.ArgumentParser(
-    formatter_class = argformat.StructuredFormatter,
-)
 
-# Optional arguments
-parser.add_argument('--asterisk', type=str, default='true', help='asterisk task')
-parser.add_argument('--crf'     , type=str, default='true', help='crf task')
-parser.add_argument('--rmdup'   , type=str, default='true', help='remove duplicate task')
-parser.add_argument('--elip'    , type=str, default='false', help='ellipsis resolution')
-parser.add_argument('--gname'   , type=str, default='graph', help='graph name')
-parser.add_argument('input_file', type=str, help='input file')
+if __name__ == "__main__":
 
-# Parse arguments
-args = parser.parse_args()
+    ########################################################################
+    #                           Parse arguments                            #
+    ########################################################################
 
+    # Parse arguments
+    parser = argparse.ArgumentParser(
+        formatter_class = argformat.StructuredFormatter,
+    )
 
+    # Optional arguments
+    parser.add_argument('--asterisk', type=str, default='true', help='asterisk task')
+    parser.add_argument('--crf'     , type=str, default='true', help='crf task')
+    parser.add_argument('--rmdup'   , type=str, default='true', help='remove duplicate task')
+    parser.add_argument('--elip'    , type=str, default='false', help='ellipsis resolution')
+    parser.add_argument('--gname'   , type=str, default='graph', help='graph name')
+    parser.add_argument('input_file', type=str, help='input file')
 
-def prepare(args):
+    # Parse arguments
+    args = parser.parse_args()
+
+    ########################################################################
+    #                             Prepare data                             #
+    ########################################################################
 
     ########################################################################
     #                        Tokenizer preparation                         #
@@ -133,14 +140,6 @@ def prepare(args):
 
     print("End preprocessing")
 
-
-
-
-
-
-if __name__ == "__main__":
-
-    prepare(args)
     exit()
 
     txt = preprocessing.modification_(cc)
