@@ -1,9 +1,14 @@
-from subject_verb_object_extract import findSVOs
+# Imports
 from allennlp.predictors.predictor import Predictor
-from nltk.stem.wordnet import WordNetLemmatizer
-from preprocessing import *
-from list_iocs import iocs
-from lists_patterns import load_lists, fpath
+from list_iocs                     import iocs
+from lists_patterns                import load_lists, fpath
+from load_pattern                  import load_patterns, path
+from nltk                          import sent_tokenize
+from nltk.stem.wordnet             import WordNetLemmatizer
+from subject_verb_object_extract   import findSVOs
+import re
+
+# TODO - move to main
 main_verbs = load_lists(fpath)['verbs']
 main_verbs = main_verbs.replace("'", "").strip('][').split(', ')
 
