@@ -50,9 +50,12 @@ def colon_seprator_multiplication(stri):
 def roles(sentences, nlp):
     my_svo_triplet = []
     all_nodes = []
+
+    # public SRL model https://s3-us-west-2.amazonaws.com/allennlp/models/srl-model-2018.05.25.tar.gz
+    # Major speedup
+    predictor = Predictor.from_path("models/srl-model.tar.gz")
+
     for i in range(len(sentences)):
-        # public SRL model https://s3-us-west-2.amazonaws.com/allennlp/models/srl-model-2018.05.25.tar.gz
-        predictor = Predictor.from_path("models/srl-model.tar.gz")
         predictions = predictor.predict(sentences[i])
         lst = []
         nodes = []
