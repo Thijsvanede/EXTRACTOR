@@ -3,6 +3,7 @@ import argformat
 import argparse
 import re
 import signal
+import spacy
 from nltk import sent_tokenize
 
 # Imports from package
@@ -10,11 +11,6 @@ import graph_generator
 import preprocessing
 import role_generator
 import tokenizer
-
-# Load NLP module
-import spacy
-nlp = spacy.load('en_core_web_lg')
-
 
 if __name__ == "__main__":
 
@@ -50,36 +46,32 @@ if __name__ == "__main__":
         text = " ".join(text)
         text = text.replace('\n', ' ')
 
-
     from lists_patterns import load_lists, fpath
 
     # Load lists
     loaded_lists = load_lists(fpath)
+    titles_list  = loaded_lists['MS_TITLES'].replace("'", "").strip('][').split(', ')
+    main_verbs   = loaded_lists['verbs'    ].replace("'", "").strip('][').split(', ')
+
+
+    # Load NLP module
+    nlp = spacy.load('en_core_web_lg')
 
     ########################################################################
     #                        Tokenizer preparation                         #
     ########################################################################
 
-    titles_list = loaded_lists['MS_TITLES']
-    titles_list = titles_list.replace("'", "").strip('][').split(', ')
-    main_verbs  = loaded_lists['verbs']
-    main_verbs  = main_verbs.replace("'", "").strip('][').split(', ')
-
+    # Remove obsolete text
     text = tokenizer.delete_brackets(text)
     text = text.strip(" ")
 
-    all_sentences_list = tokenizer.removable_token(text)
-
-    text_tokenized = tokenizer.sentence_tokenizer(all_sentences_list, titles_list, nlp, main_verbs)
-    print("*****sentence_tokenizer:", len(tokenizer.sent_tokenize(text_tokenized)), tokenizer.sentence_tokenizer(all_sentences_list, titles_list, nlp, main_verbs))
-
-    print("*****Tokenizer*****")
-
-    for i,val in enumerate(tokenizer.sent_tokenize(text_tokenized)):
-        print(i,val)
-
-
-    print("End tokenizer")
+    # Tokenize text
+    text = tokenizer.sentence_tokenizer(
+        tokenizer.removable_token(text),
+        titles_list,
+        nlp,
+        main_verbs,
+    )
 
     ########################################################################
     #                      Preprocessing preparation                       #
@@ -91,7 +83,6 @@ if __name__ == "__main__":
     signal.signal(signal.SIGSEGV, preprocessing.SIGSEGV_signal_arises)
 
     print("------------communicate ---------------")
-    text = tokenizer.sentence_tokenizer(all_sentences_list, titles_list, nlp, main_verbs)
     text = preprocessing.delete_brackets(text)
     text = preprocessing.pass2acti(text, nlp)
     text = re.sub(' +', ' ', text)
@@ -100,6 +91,7 @@ if __name__ == "__main__":
     if args.crf == 'true':
         text = preprocessing.coref_(text, nlp)
         print("coref_",len(text),text)
+
     else:
         text = preprocessing.wild_card_extansions(text)
 
@@ -156,11 +148,14 @@ if __name__ == "__main__":
         all_nodes = role_generator.triplet_builder(all_nodes)
     else:
         all_nodes = role_generator.triplet_builder(all_nodes)
+
     all_nodes = graph_generator.remove_no_sub(all_nodes)
     lst = graph_generator.remove_c_colon_toprevent_graphvizbug(all_nodes)
+
     for i in lst:
         if "\\'" in i:
             i.replace("\\'", "'")
+
     if args.rmdup == "true":
         lst = graph_generator.rm_duplictes(lst)
         graph_generator.graph_builder(lst, args.gname)
