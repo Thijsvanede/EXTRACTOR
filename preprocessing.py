@@ -7,11 +7,9 @@ from nltk               import sent_tokenize
 from passive2active     import pass2act
 from pattern.text.en    import conjugate, PRESENT, SG # TODO - check
 from textblob           import TextBlob
-from tokenizer          import sentence_tokenizer # TODO - check
 import neuralcoref
 import nltk
 import re
-import spacy
 
 ################################################################################
 #                                  Functions                                   #
