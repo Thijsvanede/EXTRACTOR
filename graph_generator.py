@@ -2,7 +2,6 @@ import re
 from graphviz import Digraph
 from load_pattern import load_patterns, path
 from list_iocs import iocs
-import argparse
 
 class edge(object):
     def __init__(self, s, d, t):

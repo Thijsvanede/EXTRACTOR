@@ -4,7 +4,7 @@ EXTRACTOR helps to extract the system level attack behavior from unstructured th
 ---
 **NOTE**
 
-This repository is a rework of the original implementation of EXTRACTOR [PDF](https://arxiv.org/abs/2104.08618), **original source code:** https://github.com/ksatvat/EXTRACTOR.
+This repository is a rework of the original implementation of EXTRACTOR [[PDF]](https://arxiv.org/abs/2104.08618), **original source code:** https://github.com/ksatvat/EXTRACTOR.
 The aim is to make the code run quicker and be easier to extend for future research.
 
 ---

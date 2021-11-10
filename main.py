@@ -6,9 +6,10 @@ import signal
 from nltk import sent_tokenize
 
 # Imports from package
+import graph_generator
 import preprocessing
 import role_generator
-import graph_generator
+import tokenizer
 
 # Load NLP module
 import spacy
@@ -26,53 +27,55 @@ if __name__ == "__main__":
         formatter_class = argformat.StructuredFormatter,
     )
 
+    # Required arguments
+    parser.add_argument('input_file', type=str, help='input file')
+
     # Optional arguments
-    parser.add_argument('--asterisk', type=str, default='true', help='asterisk task')
-    parser.add_argument('--crf'     , type=str, default='true', help='crf task')
-    parser.add_argument('--rmdup'   , type=str, default='true', help='remove duplicate task')
+    parser.add_argument('--asterisk', type=str, default='true' , help='asterisk task')
+    parser.add_argument('--crf'     , type=str, default='true' , help='crf task')
+    parser.add_argument('--rmdup'   , type=str, default='true' , help='remove duplicate task')
     parser.add_argument('--elip'    , type=str, default='false', help='ellipsis resolution')
     parser.add_argument('--gname'   , type=str, default='graph', help='graph name')
-    parser.add_argument('input_file', type=str, help='input file')
 
     # Parse arguments
     args = parser.parse_args()
 
     ########################################################################
-    #                             Prepare data                             #
+    #                              Load data                               #
     ########################################################################
+
+    # Load input file
+    with open(args.input_file, encoding='iso-8859-1') as input_file:
+        text = input_file.readlines()
+        text = " ".join(text)
+        text = text.replace('\n', ' ')
+
+
+    from lists_patterns import load_lists, fpath
+
+    # Load lists
+    loaded_lists = load_lists(fpath)
 
     ########################################################################
     #                        Tokenizer preparation                         #
     ########################################################################
 
-    import tokenizer
-    from lists_patterns import load_lists, fpath
-
-    # Load input file
-    with open(args.input_file, encoding='iso-8859-1') as input_file:
-        txt = input_file.readlines()
-        txt = " ".join(txt)
-        txt = txt.replace('\n', ' ')
-
-    # Load lists
-    loaded_lists = load_lists(fpath)
-
     titles_list = loaded_lists['MS_TITLES']
     titles_list = titles_list.replace("'", "").strip('][').split(', ')
-    main_verbs = loaded_lists['verbs']
-    main_verbs = main_verbs.replace("'", "").strip('][').split(', ')
+    main_verbs  = loaded_lists['verbs']
+    main_verbs  = main_verbs.replace("'", "").strip('][').split(', ')
 
-    txt = tokenizer.delete_brackets(txt)
-    txt = txt.strip(" ")
+    text = tokenizer.delete_brackets(text)
+    text = text.strip(" ")
 
-    all_sentences_list = tokenizer.removable_token(txt)
+    all_sentences_list = tokenizer.removable_token(text)
 
-    txt_tokenized = tokenizer.sentence_tokenizer(all_sentences_list, titles_list, nlp, main_verbs)
-    print("*****sentence_tokenizer:", len(tokenizer.sent_tokenize(txt_tokenized)), tokenizer.sentence_tokenizer(all_sentences_list, titles_list, nlp, main_verbs))
+    text_tokenized = tokenizer.sentence_tokenizer(all_sentences_list, titles_list, nlp, main_verbs)
+    print("*****sentence_tokenizer:", len(tokenizer.sent_tokenize(text_tokenized)), tokenizer.sentence_tokenizer(all_sentences_list, titles_list, nlp, main_verbs))
 
     print("*****Tokenizer*****")
 
-    for i,val in enumerate(tokenizer.sent_tokenize(txt_tokenized)):
+    for i,val in enumerate(tokenizer.sent_tokenize(text_tokenized)):
         print(i,val)
 
 
@@ -88,32 +91,32 @@ if __name__ == "__main__":
     signal.signal(signal.SIGSEGV, preprocessing.SIGSEGV_signal_arises)
 
     print("------------communicate ---------------")
-    txt = tokenizer.sentence_tokenizer(all_sentences_list, titles_list, nlp, main_verbs)
-    txt = preprocessing.delete_brackets(txt)
-    txt = preprocessing.pass2acti(txt, nlp)
-    txt = re.sub(' +', ' ', txt)
-    print("*********8",txt)
+    text = tokenizer.sentence_tokenizer(all_sentences_list, titles_list, nlp, main_verbs)
+    text = preprocessing.delete_brackets(text)
+    text = preprocessing.pass2acti(text, nlp)
+    text = re.sub(' +', ' ', text)
+    print("*********8",text)
 
     if args.crf == 'true':
-        txt = preprocessing.coref_(txt, nlp)
-        print("coref_",len(txt),txt)
+        text = preprocessing.coref_(text, nlp)
+        print("coref_",len(text),text)
     else:
-        txt = preprocessing.wild_card_extansions(txt)
+        text = preprocessing.wild_card_extansions(text)
 
 
-    txt = preprocessing.try_to(txt)
-    print("try_to__",txt)
-    txt = preprocessing.is_capable_of(txt)
+    text = preprocessing.try_to(text)
+    print("try_to__",text)
+    text = preprocessing.is_capable_of(text)
 
     if args.elip == 'true':
-        txt = preprocessing.replcae_surrounding_subject(txt)
+        text = preprocessing.replcae_surrounding_subject(text)
     else:
-        print("is capble of__",txt)
-        txt = preprocessing.ellipsis_subject(txt, nlp)
-        print("ellipsis_subject", len(txt), txt)
+        print("is capble of__",text)
+        text = preprocessing.ellipsis_subject(text, nlp)
+        print("ellipsis_subject", len(text), text)
 
     print('------------ coref_the_following_colon ------------')
-    out = preprocessing.coref_the_following_colon(txt)
+    out = preprocessing.coref_the_following_colon(text)
 
     for i,val in enumerate(tokenizer.sent_tokenize(out)):
         print(i,val)
@@ -140,11 +143,11 @@ if __name__ == "__main__":
 
     print("End preprocessing")
 
-    txt = preprocessing.modification_(cc)
-    txt = txt.strip()
-    txt = role_generator.colon_seprator_multiplication(txt)
-    txt = re.sub(' +', ' ', txt)
-    sentences_ = sent_tokenize(txt)
+    text = preprocessing.modification_(cc)
+    text = text.strip()
+    text = role_generator.colon_seprator_multiplication(text)
+    text = re.sub(' +', ' ', text)
+    sentences_ = sent_tokenize(text)
     lst = role_generator.roles(sentences_, nlp)
     lst = role_generator.fix_srl_spacing(lst)
     all_nodes = role_generator.negation_clauses(lst)
