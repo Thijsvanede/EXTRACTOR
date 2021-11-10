@@ -55,18 +55,22 @@ def roles(sentences, nlp):
     # Major speedup
     predictor = Predictor.from_path("models/srl-model.tar.gz")
 
-    for i in range(len(sentences)):
-        predictions = predictor.predict(sentences[i])
+    # Perform prediction on all sentences
+    predictions = predictor.predict_batch_json([
+        {"sentence": sentence} for sentence in sentences
+    ])
+
+    for sentence, prediction in zip(sentences, predictions):
         lst = []
         nodes = []
-        for k in predictions['verbs']:
+        for k in prediction['verbs']:
             if k['description'].count('[') > 1:
                 lst.append(k['description'])
         for jj in range(len(lst)):
             nodes.append([])
             for j in re.findall(r"[^[]*\[([^]]*)\]", lst[jj]):
                 nodes[jj].append(j)
-        print("*****sentence:",sentences[i],'*****nodes: ',nodes)
+        print("*****sentence:",sentence,'*****nodes: ',nodes)
 
         for lis_ in nodes:
             for indx in range(len(lis_)):
@@ -82,7 +86,7 @@ def roles(sentences, nlp):
             maxlength = max((len(i) for i in nodes))
         if nodes == [] or maxlength < 3:
             print("****DP SVO****")
-            tokens = nlp(sentences[i])
+            tokens = nlp(sentence)
             svos = findSVOs(tokens)
             if svos:
                 for sv in range(len(svos)):
@@ -94,14 +98,14 @@ def roles(sentences, nlp):
             print("****Naive SVO****")
             breakers = []
             subj, obj = '', ''
-            doc = nlp(sentences[i])
+            doc = nlp(sentence)
             for token in doc:
                 if token.pos_ == 'VERB':
                     breakers.append(str(token))
             if len(breakers) != 0:
                 for vb in breakers:
-                    subj = "subj: " + sentences[i].split(vb)[0]
-                    obj = "obj: " + sentences[i].split(vb)[1]
+                    subj = "subj: " + sentence.split(vb)[0]
+                    obj = "obj: " + sentence.split(vb)[1]
                     vrb = "v: " + vb
                     lst = []
                     lst.append(subj)
@@ -146,7 +150,6 @@ def roles(sentences, nlp):
                         no_zero_nodes_plus_3[i][index] = "V: " + WordNetLemmatizer().lemmatize(item.split(": ")[1].lower(), 'v')
 
             for i in range(len(no_zero_nodes_plus_3)):
-
                 if no_zero_nodes_plus_3[i]:
                     for index, item in enumerate(no_zero_nodes_plus_3[i]):
 
