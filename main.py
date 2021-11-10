@@ -140,8 +140,6 @@ if __name__ == "__main__":
 
     print("End preprocessing")
 
-    exit()
-
     txt = preprocessing.modification_(cc)
     txt = txt.strip()
     txt = role_generator.colon_seprator_multiplication(txt)
@@ -162,6 +160,6 @@ if __name__ == "__main__":
             i.replace("\\'", "'")
     if args.rmdup == "true":
         lst = graph_generator.rm_duplictes(lst)
-        graph_generator.graph_builder(lst)
+        graph_generator.graph_builder(lst, args.gname)
     else:
-        graph_generator.graph_builder(lst)
+        graph_generator.graph_builder(lst, args.gname)

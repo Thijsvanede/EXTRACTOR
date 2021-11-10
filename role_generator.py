@@ -8,6 +8,9 @@ from nltk.stem.wordnet             import WordNetLemmatizer
 from subject_verb_object_extract   import findSVOs
 import re
 
+# Can remove?
+from list_iocs import *
+
 # TODO - move to main
 main_verbs = load_lists(fpath)['verbs']
 main_verbs = main_verbs.replace("'", "").strip('][').split(', ')
@@ -330,7 +333,6 @@ def process_convert(lst):
     return [i.replace(" ", "-") for i in lst]
 
 
-from list_iocs import *
 def astriks(lis):
     apps_process = load_lists(fpath)['APPs-PROCESS']
     apps_process = apps_process.replace("'", "").strip('][').split(' , ')

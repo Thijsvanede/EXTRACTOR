@@ -79,8 +79,8 @@ def is_house(stri):
     else:
         return False
 
-def graph_builder(lst):
-    malware_name_dot = main.args.gname + ".dot"
+def graph_builder(lst, graph_name):
+    malware_name_dot = graph_name + ".dot"
     g = Digraph(malware_name_dot, filename = malware_name_dot)
     g.body.extend(
         ['rankdir="LR"', 'size="9"', 'fixedsize="false"', 'splines="true"', 'nodesep=0.3', 'ranksep=0', 'fontsize=10', 'overlap="scalexy"',
